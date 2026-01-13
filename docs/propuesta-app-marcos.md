@@ -1,94 +1,106 @@
-# Propuesta de aplicación web/web mobile para venta de marcos personalizados
+# Solución para aplicación web/web mobile de marcos personalizados
 
 ## Objetivo
-Crear una aplicación web responsiva (desktop y mobile) que permita al cliente comprar marcos de lentes personalizados en un flujo simple (máximo 5 pasos), incorporando asesoría de imagen basada en captura de selfie y reconocimiento facial para sugerir diseños ideales.
+Construir una aplicación web responsiva (desktop y mobile) que permita al cliente comprar marcos personalizados en un flujo máximo de 5 pasos, incorporando asesoría de imagen basada en selfie y reconocimiento facial para recomendar los diseños ideales.
 
-## Perfil del usuario
-- **Cliente final** que busca marcos personalizados y asesoría de imagen rápida.
-- **Nivel de habilidad digital**: básico a intermedio.
-- **Objetivo principal**: obtener recomendaciones confiables y comprar sin fricción.
+## Resultado esperado
+- Flujo completo desde selfie hasta pago en **≤ 5 pasos**.
+- Recomendaciones personalizadas explicadas de forma clara.
+- Checkout simple con carrito y confirmación de orden.
 
-## Principios de experiencia (UX)
-- **Flujo en 5 pasos máximo**: desde selfie hasta compra.
-- **Lenguaje claro** y guías visuales.
-- **Feedback inmediato**: resultados y explicaciones concisas.
-- **Accesible y responsivo**: mobile-first.
-
-## Flujo principal (5 pasos)
-1. **Captura selfie / subir foto**
-   - Guía visual y consejos de iluminación.
-   - Validaciones básicas: rostro centrado, buena iluminación.
+## Alcance funcional (MVP)
+1. **Selfie / Foto**
+   - Captura desde cámara (WebRTC) o carga de imagen.
+   - Validación de calidad (iluminación, rostro centrado).
 2. **Análisis automático**
-   - Reconocimiento facial.
-   - Colorimetría personal (subtono, contraste, intensidad).
-   - Visagismo (forma del rostro: ovalado, cuadrado, redondo, triangular, etc.).
-   - Morfología corporal (si aplica, opcional).
-3. **Resultados y perfil**
-   - Resumen de atributos clave.
-   - Paleta de color sugerida.
-   - Tipologías de armazones recomendados.
-4. **Personalización y selección**
-   - Filtros: material, tamaño, color, estilo.
-   - “Probar virtualmente” (lente 2D/3D sobre selfie).
-   - Comparación de 2-3 opciones.
+   - Detección facial y puntos clave.
+   - Colorimetría básica (subtono, contraste, temperatura).
+   - Visagismo (forma del rostro).
+3. **Resultados**
+   - Resumen de atributos + paleta de color.
+   - Reglas claras de recomendación.
+4. **Selección y personalización**
+   - Filtros inteligentes y prueba virtual (2D).
+   - Comparación de 2–3 marcos.
 5. **Carrito y compra**
-   - Resumen de producto.
-   - Opciones de pago y envío.
-   - Confirmación y seguimiento.
+   - Resumen, dirección, pago y confirmación.
 
-## Funcionalidades clave
-### Captura y reconocimiento
-- Cámara en navegador (WebRTC) o subida de imagen.
-- Detección de rostro y puntos faciales.
-- Validaciones automáticas de calidad.
+## Requerimientos no funcionales
+- **Performance**: análisis en < 5 s en dispositivos móviles medios.
+- **Privacidad**: consentimiento explícito y eliminación de datos.
+- **Accesibilidad**: contrastes, tipografías legibles, navegación simple.
+- **Escalabilidad**: microservicios o módulos desacoplados.
 
-### Análisis de asesoría de imagen
-- **Colorimetría**: subtono, temperatura y contraste.
-- **Visagismo**: forma de rostro y proporciones.
-- **Morfología**: análisis opcional con parámetros básicos.
-- **Recomendaciones**: estilos y colores óptimos.
+## Arquitectura de solución
+### Frontend (Web/Mobile)
+- **React/Next.js** con diseño mobile-first.
+- UI en 5 pasos con progreso visible.
+- Integración de cámara y preview.
 
-### Catálogo y recomendación
-- Catálogo con filtros inteligentes basados en el perfil.
-- Motor de recomendación (reglas + IA)
-- Descripciones con “por qué” se recomienda cada marco.
+### Backend
+- **API** para procesamiento de imágenes y recomendaciones.
+- Servicio de catálogo y stock.
+- Servicio de órdenes y pagos.
 
-### Compra
-- Carrito sencillo con edición rápida.
-- Checkout en 1 paso si es posible.
-- Métodos de pago locales.
+### IA/ML
+- **Detección facial**: MediaPipe FaceMesh.
+- **Colorimetría**: extracción de tonos de piel + reglas.
+- **Visagismo**: clasificación de forma del rostro.
+- **Recomendaciones**: reglas de negocio + ranking básico.
 
-## Arquitectura sugerida
-- **Frontend**: React/Next.js, diseño mobile-first.
-- **Backend**: Node.js o Python (FastAPI).
-- **IA/ML**:
-  - Detección facial: MediaPipe o FaceMesh.
-  - Análisis de colorimetría: extracción de tonos de piel.
-  - Recomendaciones: reglas + modelos ligeros.
-- **Infraestructura**: CDN para imágenes, almacenamiento seguro.
+## Flujo de datos (alto nivel)
+1. Usuario captura selfie.
+2. Imagen → API de análisis facial.
+3. Resultado → perfil de asesoría.
+4. Perfil → motor de recomendaciones.
+5. Resultados → selección de producto.
+6. Checkout → creación de orden.
 
-## Diseño UI/UX propuesto
-- **Pantalla inicial**: propuesta de valor y botón “Comenzar”.
-- **Paso a paso** con barra de progreso.
-- **Resultados visuales**: paleta de color + ejemplos.
-- **Catálogo** con filtros contextuales.
+## Modelo de datos (simplificado)
+- **UserSession**: id, idioma, dispositivo.
+- **FaceProfile**: formaRostro, subtono, contraste, paleta.
+- **Recommendation**: marcoId, score, explicación.
+- **Cart**: items, precio, impuestos.
+- **Order**: estado, envío, pago.
 
-## Requisitos de privacidad
-- Consentimiento explícito para uso de imágenes.
-- Procesamiento seguro de imágenes (idealmente local o con cifrado).
-- Opción de eliminar datos y fotografías.
+## UX/UI propuesto (pantallas clave)
+1. **Landing**: valor principal + CTA “Comenzar”.
+2. **Selfie**: cámara, tips y botón continuar.
+3. **Resultados**: resumen visual y paleta.
+4. **Catálogo**: filtros inteligentes + prueba virtual.
+5. **Checkout**: carrito, datos y pago.
 
-## Métricas clave
-- Conversión de selfie a compra.
-- Tiempo promedio de flujo.
-- Tasa de abandono por paso.
-- Satisfacción del cliente (NPS).
+## Reglas de recomendación (ejemplo)
+- Rostro **ovalado**: marcos rectangulares o cuadrados.
+- Subtono **cálido**: tonos dorados o marrón.
+- Contraste **alto**: colores más sólidos y oscuros.
 
-## Próximos pasos recomendados
-1. **Discovery**: investigación con clientes reales.
-2. **Prototipo** en Figma con los 5 pasos.
-3. **MVP** con análisis facial y recomendaciones básicas.
-4. **Iteración** con datos reales.
+## Seguridad y privacidad
+- Consentimiento explícito antes de analizar imágenes.
+- Almacenamiento cifrado temporal o procesamiento local.
+- Opción de eliminación inmediata de selfie.
+
+## Roadmap de implementación
+### Fase 1 (4–6 semanas)
+- Flujo selfie → análisis → resultados.
+- Motor de recomendaciones por reglas.
+- Catálogo y checkout básico.
+
+### Fase 2 (6–8 semanas)
+- Prueba virtual 2D/3D.
+- Recomendaciones basadas en IA ligera.
+- Panel administrativo de productos.
+
+### Fase 3 (8–12 semanas)
+- Analítica avanzada y A/B testing.
+- Optimización de modelo de visagismo.
+- Integraciones adicionales de pago/envío.
+
+## Próximos pasos
+1. Validar requisitos de negocio y catálogo.
+2. Diseñar prototipo UI en Figma.
+3. Desarrollar MVP con las fases 1 y 2.
+4. Lanzar piloto y optimizar con métricas.
 
 ---
-Si deseas, puedo desarrollar un prototipo visual o definir el roadmap técnico con prioridades, costos aproximados y tiempos de implementación.
+Si deseas, puedo convertir esto en un documento técnico con historias de usuario, backlog detallado y estimaciones de costos.
